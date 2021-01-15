@@ -1,4 +1,9 @@
-const { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes } = require('./iss');
+const {
+  fetchMyIP,
+  fetchCoordsByIP,
+  fetchISSFlyOverTimes,
+  nextISSTimesForMyLocation
+} = require('./iss');
 
 
 
@@ -28,3 +33,19 @@ const { fetchMyIP, fetchCoordsByIP, fetchISSFlyOverTimes } = require('./iss');
   
 //     console.log('It worked! Returned:' , data);
 //   });
+
+const passFormat = arr => {
+  arr.forEach(data => {
+    let dateObj = new Date(data.risetime * 1000);
+    console.log(`next pass at ${dateObj.toString()} for ${data.duration} seconds`)
+  })
+}
+
+nextISSTimesForMyLocation((error, passArr) => {
+  if (error) {
+    return console.log("It didn't work!", error);
+  }
+  // success, print out the deets!
+  passFormat(passArr);
+});
+

@@ -51,15 +51,36 @@ const fetchISSFlyOverTimes = (latlon, callback) => {
   }
   requestJsonObj(`http://api.open-notify.org/iss-pass.json?lat=${lat}&lon=${lon}`, (err, obj) => {
     if (err) callback(err, null);
-    else {    
+    else {
       callback(null, obj.response);
     }
   });
 };
 
+const nextISSTimesForMyLocation = callback => {
+  fetchMyIP((err, ip) => {
+    if (err) callback(err, null);
+    else {
+      fetchCoordsByIP(ip, (err, coords) => {
+        if (err) callback(err, null);
+        else {
+          fetchISSFlyOverTimes(coords, (err, passArr) => {
+            if (err) callback(err, null);
+            else {
+              callback(null, passArr);          
+            }
+          });
+        }
+      });
+    }
+  });
+};
+
+
 
 module.exports = {
   fetchMyIP,
   fetchCoordsByIP,
-  fetchISSFlyOverTimes
+  fetchISSFlyOverTimes,
+  nextISSTimesForMyLocation
 };
